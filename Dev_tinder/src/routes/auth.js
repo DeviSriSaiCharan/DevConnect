@@ -9,8 +9,8 @@ const userAuth = require('../middlewares/auth');
 // Helper for cookie options
 const getCookieOptions = () => ({
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  secure: true,
+  sameSite: "None",
 });
 
 authRouter.post("/signup", async(req, res) => {
