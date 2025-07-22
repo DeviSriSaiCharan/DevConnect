@@ -6,6 +6,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const userAuth = require('../middlewares/auth');
 
+// Helper for cookie options
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+});
 
 authRouter.post("/signup", async(req, res) => {
  try{
@@ -16,7 +22,7 @@ authRouter.post("/signup", async(req, res) => {
          firstName,lastName,email,password:passwordHash
      });
      const token = await user.getJWT();
-     res.cookie("jwt",token);
+     res.cookie("jwt", token, getCookieOptions());
      await user.save();
    res.send(user);
    }catch(err){
@@ -34,7 +40,7 @@ authRouter.post("/login",async(req,res)=>{
     const isvalid=await user.isPasswordvalid(password);
     if(isvalid){
         const token = await user.getJWT();
-        res.cookie("jwt",token);
+        res.cookie("jwt", token, getCookieOptions());
         const { firstName, lastName, gender, age, skills, about, photoURL } = user;
         res.send({ firstName, lastName, gender, age, skills, about, photoURL }); 
     }else{
@@ -46,7 +52,10 @@ authRouter.post("/login",async(req,res)=>{
 });
 
 authRouter.post("/logout",(req,res)=>{
-    res.cookie("jwt",null,{expiresIn:new Date(Date.now())});
+    res.cookie("jwt", null, {
+      ...getCookieOptions(),
+      expires: new Date(0),
+    });
     res.send("logged out successfully");
 });
 
