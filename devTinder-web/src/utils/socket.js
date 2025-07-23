@@ -8,5 +8,4 @@ export const createSocketConnection=()=>{
         return io("/",{path:"/api/socket.io"});
     }
    
-   
 }
