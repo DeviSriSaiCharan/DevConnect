@@ -13,10 +13,17 @@ const router = require('./routes/group');
 const cors=require('cors');
 const http = require('http');
 const initializeSocket = require('./utils/socket');
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
+  origin: process.env.FRONTEND_URL, 
+  credentials: true,               
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'], 
 }));
+
+app.options('*', cors());
+
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads",express.static("uploads"));
